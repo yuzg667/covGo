@@ -12,7 +12,14 @@ from django.db import connection
 def cloneToTaskDir():
     # 查出库里有哪些是0状态的数据待clone
     cursor = connection.cursor()
-    cursor.execute('''SELECT c.id AS cid, p.id AS pid, gitName,gitUrl,gitPwd,covTaskName FROM cov_covtask c
+    cursor.execute('''SELECT c.id AS cid,
+                                p.id AS pid, 
+                                gitName,
+                                gitUrl,
+                                gitPwd,
+                                covTaskName,
+                                p.projectName 
+                                FROM cov_covtask c
                                     LEFT JOIN cov_project p ON  c.projectId = p.id
                                     WHERE c.deleted = 0 AND c.status=0 AND p.deleted = 0 
                                         ''')
@@ -21,12 +28,12 @@ def cloneToTaskDir():
     # 依次下载
     for res in resObj:
         res = resObj[i]
-        username = res.gitName
-        pwd = res.gitPwd
-        gitUrl = res.gitURL
-        gitProjectName = res.projectName
-        covTaskId = res.cid
-        covTaskName = res.covTaskName
+        username = res[2]
+        pwd = res[4]
+        gitUrl = res[3]
+        gitProjectName = res[6]
+        covTaskId = res[0]
+        covTaskName = res[5]
         MyLog.info(f"首次下载--start git clone--覆盖率任务名称:{covTaskName}--仓库地址:{gitUrl}")
         # TODO 当clone异常的时候跳过执行下一个任务
         try:
