@@ -1,0 +1,14 @@
+python manage.py makemigrations
+python manage.py migrate
+
+python .\manage.py createsuperuser
+
+显示已经激活的定时任务
+python manage.py crontab show
+
+移除定时任务（当不使用的时候记得移除，否则会一直存在）
+python manage.py crontab remove
+
+
+python manage.py crontab add
+python manage.py crontab show
