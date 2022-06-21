@@ -153,5 +153,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
 
 CRONJOBS = [
-    ('*/1 * * * *', 'timedTask.cron.cloneToTaskDir','>>logs.txt')  #   */1 * * * *
+    ('*/1 * * * *', 'timedTask.cron.cloneToTaskDir','>>logs.txt'),  #   */1 * * * *
+    ('*/1 * * * *', 'timedTask.cron.getCov','>>logs.txt'),  #   */1 * * * *
 ]

@@ -14,3 +14,6 @@ python manage.py crontab add
 python manage.py crontab show
 
 goc server与本程序在一台机器
+
+被测服务：
+goc build --center=http://192.168.56.101:7777 --agentport=:46599

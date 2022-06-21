@@ -53,7 +53,7 @@ def cloneToTaskDir():
 # 获取覆盖率
 def getCov():
     # 1、获取被测试分支
-    # 查出库里有哪些是0状态的数据待clone
+    # 查出库里有哪些是1和3状态的数据待pull、获取覆盖率
     cursor = connection.cursor()
     cursor.execute('''SELECT c.id AS cid,
                                     p.id AS pid, 
@@ -90,12 +90,15 @@ def getCov():
             # 获取被测机器列表 todo 与填写的进行对比
             clientServerList = eval(clientServerHostPort)
             # 拉取覆盖率
+            t = datetime.now().strftime('%Y%m%d%H%M%S%f')
             for clientServer in clientServerList:
+                covPath = covReportsPath(gitProjectName, covTaskId)
+                runId = generateRunId(t, covTaskId, originalHostPort=clientServer)
+                print(covPath)
+                print(runId)
                 # 拉取正常的入库status=1
                 try:
-                    covReportsPath = covReportsPath(gitProjectName,covTaskId)
-                    runId = generateRunId(covTaskId, originalHostPort=clientServer)
-                    execCmd(f'goc profile --center={clientServer} -o {covReportsPath}/{runId}.cov''')
+                    execCmd(f'goc profile --center={clientServer} -o {covPath}/{runId}.cov''')
                     p = covTaskHistoryModel(runId = runId,
                                             covTaskId = covTaskId,
                                             clientServerHostPort = clientServer,
@@ -117,9 +120,31 @@ def getCov():
 
         except Exception as e:
             MyLog.error(f"pull下载异常--end git pull--覆盖率任务名称:{covTaskName}--仓库地址:{gitUrl}，报错如下: {str(e)}")
-            covTaskModel.objects.filter(id=covTaskId).update(status=4,
+            covTaskModel.objects.filter(id=covTaskId).update(
+                                                            # status=4,
                                                              updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
                                                              )
 
 
-
+# 获取覆盖率
+def generateHtmlReport():
+    # 查出库里有哪些是0状态的数据待clone
+    cursor = connection.cursor()
+    cursor.execute('''SELECT c.id AS cid,
+                                    p.id AS pid, 
+                                    gitName,
+                                    gitUrl,
+                                    gitPwd,
+                                    covTaskName,
+                                    p.projectName ,
+                                    c.branch,
+                                    c.clientServerHostPort
+                                    FROM cov_covtask c
+                                        LEFT JOIN cov_project p ON  c.projectId = p.id
+                                        WHERE c.deleted = 0 AND c.status IN(1,3) AND p.deleted = 0 
+                                            ''')
+    resObj = cursor.fetchall()
+    i = 0
+    # 依次下载
+    for res in resObj:
+        res = resObj[i]
