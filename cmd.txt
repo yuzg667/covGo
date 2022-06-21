@@ -12,3 +12,5 @@ python manage.py crontab remove
 
 python manage.py crontab add
 python manage.py crontab show
+
+goc server与本程序在一台机器
