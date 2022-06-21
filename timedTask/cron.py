@@ -51,6 +51,7 @@ def cloneToTaskDir():
             covTaskModel.objects.filter(id=covTaskId).update(status=2,
                                                              updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
                                                              )
+    i = i + 1
 
 # 获取覆盖率
 def getCov():
@@ -84,7 +85,7 @@ def getCov():
         covTaskName = res[5]
         branch = res[7]
         clientServerHostPort = res[8]
-        MyLog.info(f"开始搜集覆盖率--覆盖率任务名称:{covTaskName}--clientServer:{clientServerHostPort}")
+        MyLog.info(f"开始搜集覆盖率--覆盖率任务名称:{covTaskName}--clientServerList:{clientServerHostPort}")
         try:
             # 拉取代码
             pullCode(gitProjectName, covTaskId)
@@ -102,7 +103,9 @@ def getCov():
                 print(runId)
                 # 拉取正常的入库status=1
                 try:
-                    execCmd(f'goc profile --center={clientServer} -o {covPath}/{covFileName}.cov''')
+                    getCovcmd = f'goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
+                    MyLog.info(f'getCovcmd:{getCovcmd}')
+                    execCmd(getCovcmd)
                     p = covTaskHistoryModel(runId = runId,
                                             covTaskId = covTaskId,
                                             clientServerHostPort = clientServer,
@@ -131,7 +134,7 @@ def getCov():
             covTaskModel.objects.filter(id=covTaskId).update(
                                                              updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
                                                              )
-
+    i = i + 1
 
 # 生成覆盖率报告
 def generateHtmlReport():
@@ -166,15 +169,25 @@ def generateHtmlReport():
         try:
             MyLog.info(f"开始生成html--覆盖率任务名称:{covTaskName}")
             # 合并全部覆盖率文件
-            execCmd(f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov''')
+            mergeCmd = f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
+            MyLog.info(f'mergeCmd:{mergeCmd}')
+            execCmd(mergeCmd)
             # 把历史cov文件移到bak文件夹
-            execCmd(f'''mkdir -p {covPath}/bak && mv {covPath}/*.cov {covPath}/bak''')
+            mvTobakCmd = f'''mkdir -p {covPath}/bak && mv {covPath}/*.cov {covPath}/bak'''
+            MyLog.info(f'mvTobakCmd:{mvTobakCmd}')
+            execCmd(mvTobakCmd)
             # 把最新的cov文件移出来，下次merge使用
-            execCmd(f'''mv {covPath}/bak/{mergeCovName}.cov {covPath}''')
+            mvNewMergeOutCmd = f'''mv {covPath}/bak/{mergeCovName}.cov {covPath}'''
+            MyLog.info(f'mvNewMergeOutCmd:{mvNewMergeOutCmd}')
+            execCmd(mvNewMergeOutCmd)
             # 把cov转换成xml
-            execCmd(f'''gocov convert {covPath}/{mergeCovName}.cov |gocov-xml > {covPath}/{mergeCovName}.xml''')
+            covToXmlCmd = f'''gocov convert {covPath}/{mergeCovName}.cov |gocov-xml > {covPath}/{mergeCovName}.xml'''
+            MyLog.info(f'covToXmlCmd:{covToXmlCmd}')
+            execCmd(covToXmlCmd)
             # xml转换成后html文件
-            execCmd(f'''diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html''')
+            xmlToHtmlCmd = f'''diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html'''
+            MyLog.info(f'xmlToHtmlCmd:{xmlToHtmlCmd}')
+            execCmd(xmlToHtmlCmd)
             MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
             p = reportsModel(runId=runId,
                              covTaskId=covTaskId,
@@ -190,4 +203,5 @@ def generateHtmlReport():
                              )
             p.save()
             MyLog.error(f"生成html失败--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html，报错如下: {str(e)}")
+    i = i + 1
 
