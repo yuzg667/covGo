@@ -1,7 +1,7 @@
 import time
-
+from django.conf import settings
 from utils.execCmd import execCmd
-from utils.gitHandle import cloneCode, pullCode, checkOutBranch
+from utils.gitHandle import cloneCode, pullCode, checkOutBranch, downloadPath
 from cov.models import project as projectModel
 from cov.models import covTask as covTaskModel
 from cov.models import covTaskHistory as covTaskHistoryModel
@@ -103,7 +103,7 @@ def getCov():
                 print(runId)
                 # 拉取正常的入库status=1
                 try:
-                    getCovcmd = f'goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
+                    getCovcmd = f'{settings.BASE_DIR}/cmdTools/goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
                     MyLog.info(f'getCovcmd:{getCovcmd}')
                     execCmd(getCovcmd)
                     p = covTaskHistoryModel(runId = runId,
@@ -169,7 +169,7 @@ def generateHtmlReport():
         try:
             MyLog.info(f"开始生成html--覆盖率任务名称:{covTaskName}")
             # 合并全部覆盖率文件
-            mergeCmd = f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
+            mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
             MyLog.info(f'mergeCmd:{mergeCmd}')
             execCmd(mergeCmd)
             # 把历史cov文件移到bak文件夹
@@ -181,11 +181,13 @@ def generateHtmlReport():
             MyLog.info(f'mvNewMergeOutCmd:{mvNewMergeOutCmd}')
             execCmd(mvNewMergeOutCmd)
             # 把cov转换成xml
-            covToXmlCmd = f'''gocov convert {covPath}/{mergeCovName}.cov |gocov-xml > {covPath}/{mergeCovName}.xml'''
+            # covToXmlCmd = f'''cd {covPath} && gocov convert {covPath}/{mergeCovName}.cov | gocov-xml > {covPath}/{mergeCovName}.xml'''
+            gitCodePath = downloadPath(gitProjectName, covTaskId)
+            covToXmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-xml > {covPath}/{mergeCovName}.xml'''
             MyLog.info(f'covToXmlCmd:{covToXmlCmd}')
             execCmd(covToXmlCmd)
             # xml转换成后html文件
-            xmlToHtmlCmd = f'''diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html'''
+            xmlToHtmlCmd = f'''cd {gitCodePath} && diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html'''
             MyLog.info(f'xmlToHtmlCmd:{xmlToHtmlCmd}')
             execCmd(xmlToHtmlCmd)
             MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")

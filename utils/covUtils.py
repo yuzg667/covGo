@@ -5,6 +5,9 @@ import requests
 from django.conf import settings
 import time, re
 # 获取被测机器列表
+from utils.execCmd import execCmd
+
+
 def getClientServerList():
     # res = requests.get("http://127.0.0.1:7777/v1/cover/list")
     res = requests.get("http://192.168.56.101:7777/v1/cover/list")
@@ -16,6 +19,7 @@ def getClientServerList():
 # 定义覆盖率文件存储位置
 def covReportsPath(gitProjectName,covTaskId):
     covReportsPath = os.path.join(settings.BASE_DIR, '..', 'covFilesDir', 'covReports',str(gitProjectName).strip(), str(covTaskId).strip())
+    execCmd(f'''chmod 777 {covReportsPath}''')
     return covReportsPath
 
 # 生成runId

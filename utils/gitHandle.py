@@ -10,6 +10,7 @@ def downloadPath(gitProjectName,covTaskId):
     gitDownloadPath = os.path.join(settings.BASE_DIR, '..', 'covFilesDir', str(gitProjectName).strip(), str(covTaskId).strip())
     if not os.path.exists(gitDownloadPath):
         os.makedirs(gitDownloadPath)
+        execCmd(f'''chmod 777 {gitDownloadPath}''')
     return gitDownloadPath
 
 # 克隆仓库，不指定分支
@@ -21,6 +22,7 @@ def cloneCode(username,pwd,gitUrl,gitProjectName,covTaskId):
     # 首次clone创建对应文件夹
     if not os.path.exists(codeDir):
         os.makedirs(codeDir)
+        execCmd(f'''chmod 777 {codeDir}''')
     Repo.clone_from(f'https://{username}:{pwd}@{gitUrl}', to_path=codeDir)
 
 # 获取远程分支列表

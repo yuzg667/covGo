@@ -4,3 +4,4 @@ pymysql
 #django_crontab
 requests
 django_apscheduler
+diff_cover
