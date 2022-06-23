@@ -59,7 +59,7 @@ ROOT_URLCONF = 'covGo.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['./templates', '../covFilesDir/covReports'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -157,3 +157,29 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #     ('*/1 * * * *', 'timedTask.cron.getCov','>>logs.txt'),  #   */1 * * * *
 #     ('*/1 * * * *', 'timedTask.cron.generateHtmlReport','>>logs.txt'),  #   */1 * * * *
 # ]
+
+# 下边的函数启动时，只执行一次
+# 初始化一些文件、文件夹
+from utils.execCmd import execCmd
+from django.conf import settings
+flag1 = 0
+def initFileAndDir():
+    if flag1 == 0 :
+        execCmd(f'''mkdir -p {settings.BASE_DIR}/../covFilesDir''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/../covFilesDir''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/../covFilesDir/*''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/cmdTools''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/cmdTools/*''')
+        flag1 == 1
+initFileAndDir()
+
+from django.db import connection
+# 删除表数据
+flag2 = 0
+def delTableData():
+    if flag2 == 0:
+        cursor = connection.cursor()
+        cursor.execute('''DELETE FROM django_apscheduler_djangojobexecution;''')
+        cursor.execute('''DELETE FROM django_apscheduler_djangojob;''')
+        flag2 == 1
+delTableData()

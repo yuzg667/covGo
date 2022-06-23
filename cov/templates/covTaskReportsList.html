@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>覆盖率报告列表</title>
+<meta name="keywords" content="">
+{% endblock%}
+
+{% block form_area %}
+    <style>
+        .hh { display: inline; }
+    </style>
+<div>
+<h4><B>【{{projectName}}】【{{covTaskName}}】覆盖率报告列表</B></h4>
+</div>
+<form  action="" method="post" name="caseform" id="caseform" onsubmit="return comfirm()">
+{% csrf_token %}
+
+	 </form><br>
+	<table class="table table-hover">
+	<thead>
+		<tr>
+			<th>ID</th>
+			<th>runId</th>
+			<th>测试分支</th>
+			<th>基准分支</th>
+			<th>总变动行数</th>
+			<th>未覆盖行数</th>
+			<th>覆盖率</th>
+			<th>生成时间</th>
+		</tr>
+	</thead>
+	
+	{% for item in resObj %}
+	<tbody>
+	<form  name="form" method="post" >
+	{% csrf_token %}
+		<tr>
+
+			<td> {{item.id}}</td>
+			<td> <a href="/covHtml/?reportId={{item.id}}" >{{item.runId}}</a></td>
+			<td> {{item.branch}}</td>
+			<td> {{item.compareBranch}}</td>
+			<td> {{item.diffLineTotal}}</td>
+			<td> {{item.missLineTotal}}</td>
+			<td> {{item.coverage}}</td>
+			<td> {{item.createTime}}</td>
+		</tr>
+		</tbody>
+	</form>
+	{% endfor %}
+	</table>
+
+{% endblock%}
