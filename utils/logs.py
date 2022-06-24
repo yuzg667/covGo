@@ -53,8 +53,8 @@ def get_current_time():
 
 class MyLog:
     path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    log_file = path + '/Log/log.log'
-    err_file = path + '/Log/err.log'
+    log_file = path + '../covGoLog/log.log'
+    err_file = path + '../covGoLog/err.log'
     logger.setLevel(LEVELS.get(level, logging.NOTSET))
     create_file(log_file)
     create_file(err_file)

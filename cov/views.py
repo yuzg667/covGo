@@ -49,3 +49,5 @@ def covTaskList(request):
     covTaskListObj = covTaskModel.objects.filter(deleted=0)
     return render(request, 'covTaskList.html', {'covTaskListObj':covTaskListObj
                                                  })
+
+
