@@ -176,7 +176,7 @@ def generateHtmlReport():
             xmlNameList = getXmlFileName(covPath)
             # 把0kb的xml视为有问题的文件
             for xml in xmlNameList:
-                if os.stat(f'{covPath}/{xml}').st_size == 0:]
+                if os.stat(f'{covPath}/{xml}').st_size == 0:
                     MyLog.info(f'''-----11111111111:mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
                     execCmd(f'''mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
             # 合并全部覆盖率文件
