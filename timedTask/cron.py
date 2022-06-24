@@ -103,7 +103,8 @@ def getCov():
                 print(runId)
                 # 拉取正常的入库status=1
                 try:
-                    getCovcmd = f'{settings.BASE_DIR}/cmdTools/goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
+                    # getCovcmd = f'''{settings.BASE_DIR}/cmdTools/goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
+                    getCovcmd = f'''goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
                     MyLog.info(f'getCovcmd:{getCovcmd}')
                     execCmd(getCovcmd)
                     p = covTaskHistoryModel(runId = runId,
@@ -169,7 +170,8 @@ def generateHtmlReport():
         try:
             MyLog.info(f"开始生成html--覆盖率任务名称:{covTaskName}")
             # 合并全部覆盖率文件
-            mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
+            # mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
+            mergeCmd = f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
             MyLog.info(f'mergeCmd:{mergeCmd}')
             execCmd(mergeCmd)
             # 把历史cov文件移到bak文件夹
