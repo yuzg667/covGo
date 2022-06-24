@@ -53,6 +53,7 @@ def cloneToTaskDir():
                                                              )
     i = i + 1
 
+
 # 获取覆盖率
 def getCov():
     MyLog.info(f"-----getCov任务开始执行-----")
@@ -70,7 +71,7 @@ def getCov():
                                     c.clientServerHostPort
                                     FROM cov_covtask c
                                         LEFT JOIN cov_project p ON  c.projectId = p.id
-                                        WHERE c.deleted = 0 AND c.status IN(1,3,31) AND p.deleted = 0 
+                                        WHERE c.deleted = 0 AND c.status IN(1,3,31) AND p.deleted = 0 AND c.startTime <= NOW() AND NOW() <= c.endTime 
                                             ''')
     resObj = cursor.fetchall()
     i = 0
@@ -107,15 +108,16 @@ def getCov():
                     getCovcmd = f'''goc profile --center={clientServer} -o {covPath}/{covFileName}.cov'''
                     MyLog.info(f'getCovcmd:{getCovcmd}')
                     execCmd(getCovcmd)
-                    p = covTaskHistoryModel(runId = runId,
-                                            covTaskId = covTaskId,
-                                            clientServerHostPort = clientServer,
-                                            covFileName = covFileName + ".cov",
-                                            status = 3,
-                                           )
+                    p = covTaskHistoryModel(runId=runId,
+                                            covTaskId=covTaskId,
+                                            clientServerHostPort=clientServer,
+                                            covFileName=covFileName + ".cov",
+                                            status=3,
+                                            )
                     p.save()
                     covTaskModel.objects.filter(id=covTaskId).update(
-                        status = 31,
+                        status=31,
+                        lastCollectTime=time.strftime("%Y-%m-%d %H:%M:%S"),
                         updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
                     )
                     MyLog.info(f"收集覆盖率完毕--覆盖率任务名称:{covTaskName}--服务器:{clientServer}")
@@ -133,9 +135,10 @@ def getCov():
         except Exception as e:
             MyLog.error(f"获取覆盖率cov文件异常--覆盖率任务名称:{covTaskName}--仓库地址:{gitUrl}，报错如下: {str(e)}")
             covTaskModel.objects.filter(id=covTaskId).update(
-                                                             updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
-                                                             )
+                updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
+            )
     i = i + 1
+
 
 # 生成覆盖率报告
 def generateHtmlReport():
@@ -152,7 +155,7 @@ def generateHtmlReport():
                                 p.projectName 
                                 FROM cov_covtask c
                                     LEFT JOIN cov_project p ON  c.projectId = p.id
-                                    WHERE c.deleted = 0 AND c.status in (31) AND p.deleted = 0 
+                                    WHERE c.deleted = 0 AND c.status IN (31) AND p.deleted = 0  AND c.startTime <= NOW() AND NOW() <= c.endTime
                                         ''')
     resObj = cursor.fetchall()
     i = 0
@@ -195,19 +198,20 @@ def generateHtmlReport():
             MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
             p = reportsModel(runId=runId,
                              covTaskId=covTaskId,
-                             htmlFileName = mergeCovName + '.html',
-                             status = 1,
+                             htmlFileName=mergeCovName + '.html',
+                             status=1,
                              )
             p.save()
         except Exception as e:
             p = reportsModel(runId=runId,
                              covTaskId=covTaskId,
-                             htmlFileName = mergeCovName + '.html',
-                             status = 2,
+                             htmlFileName=mergeCovName + '.html',
+                             status=2,
                              )
             p.save()
             MyLog.error(f"生成html失败--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html，报错如下: {str(e)}")
     i = i + 1
+
 
 # 从html报告中爬取覆盖率
 def getCovFromHtml():
@@ -240,26 +244,26 @@ def getCovFromHtml():
         gitProjectName = res[2]
         covTaskId = res[3]
         htmlFileName = res[12]
-        htmlPath = os.path.join(covReportsPath(gitProjectName,covTaskId), htmlFileName)
+        htmlPath = os.path.join(covReportsPath(gitProjectName, covTaskId), htmlFileName)
         try:
             covRes = crawlCovFromHtml(htmlPath)
             covRes['diffLineTotal']
             reportsModel.objects.filter(id=id).update(
-                                                            isCrawled=1,
-                                                            diffLineTotal=covRes['diffLineTotal'],
-                                                            missLineTotal=covRes['missLineTotal'],
-                                                            coverage=covRes['coverage'],
-                                                            updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
-                                                             )
+                isCrawled=1,
+                diffLineTotal=covRes['diffLineTotal'],
+                missLineTotal=covRes['missLineTotal'],
+                coverage=covRes['coverage'],
+                updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
+            )
             MyLog.info(f"-----爬取covTask:{covTaskId}成功-----")
         except Exception as e:
             reportsModel.objects.filter(id=id).update(
-                                                            isCrawled=2,
-                                                            diffLineTotal="-1",
-                                                            missLineTotal="-1",
-                                                            coverage="-1",
-                                                            updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
-                                                             )
+                isCrawled=2,
+                diffLineTotal="-1",
+                missLineTotal="-1",
+                coverage="-1",
+                updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
+            )
             MyLog.error(f"-----爬取covTask:{covTaskId}失败-----，报错如下: {str(e)}")
 
         i = i + 1
