@@ -46,7 +46,7 @@ def covHtmlList(request):
 
 def covTaskList(request):
     reportId = request.GET.get("reportId")
-    covTaskListObj = covTaskModel.objects.filter(deleted=0)
+    covTaskListObj = covTaskModel.objects.filter(deleted=0).order_by('-createTime')
     return render(request, 'covTaskList.html', {'covTaskListObj':covTaskListObj
                                                  })
 
