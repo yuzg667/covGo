@@ -18,6 +18,7 @@ def covHtml(request):
 
 def covHtmlList(request):
     covTaskId = request.GET.get("covTaskId")
+    # 查询增量报告
     resObj = reportsModel.objects.raw(f'''SELECT r.id,
                                                 r.runId,
                                                 c.projectName,
@@ -31,16 +32,33 @@ def covHtmlList(request):
                                                 r.isCrawled
                                                  FROM `cov_reports` r
                                                 LEFT JOIN cov_covtask c ON r.covTaskId = c.id
-                                                WHERE r.covTaskId =  {covTaskId} AND r.status = 1  AND  diffLineTotal != '-1' ORDER BY createTime DESC
+                                                WHERE r.covTaskId =  {covTaskId} AND r.type = 0 AND r.status = 1  AND  diffLineTotal != '-1' ORDER BY createTime DESC
                                         ''')
     projectName = None
     covTaskName = None
     if len(resObj) > 0:
         projectName = resObj[0].projectName
         covTaskName = resObj[0].covTaskName
+    # 查询全量报告
+    resFullCovHtmlObj = reportsModel.objects.raw(f'''SELECT r.id,
+                                                r.runId,
+                                                c.projectName,
+                                                c.covTaskName,
+                                                c.branch,
+                                                c.compareBranch,
+                                                r.createTime,
+                                                r.diffLineTotal,
+                                                r.missLineTotal,
+                                                r.coverage,
+                                                r.isCrawled
+                                                 FROM `cov_reports` r
+                                                LEFT JOIN cov_covtask c ON r.covTaskId = c.id
+                                                WHERE r.covTaskId =  {covTaskId} AND r.type = 1 AND r.status = 1  AND  diffLineTotal != '-1' ORDER BY createTime DESC LIMIT 1
+                                        ''')
     return render(request, 'covTaskReportsList.html', {'resObj':resObj,
                                                        "projectName": projectName,
                                                        "covTaskName": covTaskName,
+                                                       'resFullCovHtmlObj': resFullCovHtmlObj,
                                                         })
 
 

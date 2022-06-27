@@ -77,6 +77,7 @@ class reports(models.Model):
     id = models.AutoField(primary_key=True)
     runId = models.CharField('runId',blank=True,null=True,max_length=50)
     covTaskId = models.CharField('covTask表的ID',blank=True,null=True,max_length=30)
+    type = models.CharField('覆盖率类型：0增量覆盖率，1全量覆盖率', max_length=1, default='0')
     htmlFileName = models.CharField('覆盖率文件名',blank=True,null=True,max_length=50)
     diffLineTotal = models.CharField('总变动行数',blank=True,null=True,max_length=50)
     missLineTotal = models.CharField('未覆盖行数',blank=True,null=True,max_length=50)
