@@ -177,8 +177,8 @@ def generateHtmlReport():
             # 把0kb的xml视为有问题的文件
             for xml in xmlNameList:
                 if os.stat(f'{covPath}/{xml}').st_size == 0:
-                    mvToErrorCmd = f'''mvToErrorCmd: mv {covPath}/{xml}  {covPath}/{xml}.error'''
-                    MyLog.info(mvToErrorCmd)
+                    mvToErrorCmd = f'''mv {covPath}/{xml}  {covPath}/{xml}.error'''
+                    MyLog.info(f'''mvToErrorCmd: {mvToErrorCmd}''')
                     execCmd(mvToErrorCmd)
             # 合并全部覆盖率文件
             # mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
@@ -222,8 +222,8 @@ def generateHtmlReport():
                 execCmd(xmlToHtmlCmd)
                 MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
             elif os.stat(f'{covPath}/{mergeCovName}.xml').st_size == 0:
-                mvToErrorCmd2 = f'''mvToErrorCmd2: mv {covPath}/{xml}  {covPath}/{xml}.error'''
-                MyLog.info(mvToErrorCmd2)
+                mvToErrorCmd2 = f'''mv {covPath}/{xml}  {covPath}/{xml}.error'''
+                MyLog.info(f'''mvToErrorCmd2:: {mvToErrorCmd2}''')
                 execCmd(mvToErrorCmd2)
 
             p = reportsModel(runId=runId,
