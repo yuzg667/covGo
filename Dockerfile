@@ -32,7 +32,7 @@ RUN source /etc/profile
 
 WORKDIR /home/workspace/covGo
 EXPOSE 8899 7777
-RUN chmod +x /home/workspace/covGo/run.sh
+RUN chmod +x /home/workspace/covGo/dockerRunInit.sh
 
 CMD ["/usr/bin/supervisord"]
 

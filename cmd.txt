@@ -7,3 +7,15 @@ goc server与本程序在一台机器
 
 被测服务：
 goc build --center=http://192.168.56.101:7777 --agentport=:46599
+
+
+sudo docker build --no-cache -t "yuzg667/covgo" .
+sudo docker run -d --name covgo -p 8899:8899 yuzg667/covgo
+
+sudo docker start covgo 
+sudo docker stop covgo 
+
+sudo docker exec -it covgo bash
+
+sudo docker rm covgo
+sudo docker image rm yuzg667/covgo
