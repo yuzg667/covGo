@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 class covTask(models.Model):
-    # id = models.IntegerField(primary_key=True, auto_created=True)
+    id = models.IntegerField(primary_key=True, auto_created=True)
     projectName = models.CharField('项目名称',blank=True,null=True,max_length=30)
     projectId = models.IntegerField('所属项目ID',blank=True,null=True,)
     covTaskName = models.CharField('任务名称',blank=True,null=True,max_length=30)
@@ -18,7 +18,7 @@ class covTask(models.Model):
     updateTime = models.DateTimeField(auto_now=True, verbose_name='更新时间',null=True)
 
 class project(models.Model):
-    # id = models.IntegerField(primary_key = True,auto_created=True)
+    id = models.IntegerField(primary_key = True,auto_created=True)
     projectName =  models.CharField('项目名称',max_length=20)
     gitURL = models.CharField('git地址：形如gitee.com/xxx/yyy.git',max_length=255)
     gitName = models.CharField('git登录名',max_length=255)
