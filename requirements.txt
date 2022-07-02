@@ -1,0 +1,4 @@
+django==3.2.13
+gitpython
+pymysql
+django_crontab
