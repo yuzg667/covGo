@@ -36,6 +36,12 @@ def pullCode(gitProjectName, covTaskId):
     repo = Repo(codeDir)
     repo.remote().pull()
 
+# 切换分支
+def checkOutBranch(gitProjectName, covTaskId, branch):
+    codeDir = downloadPath(gitProjectName, covTaskId)
+    repo = Repo(codeDir)
+    repo.git.checkout(branch)
+
 # gitProjectName = ".."
 # covTaskId = "gitTest22"
 # codeDir = downloadPath(gitProjectName, covTaskId)
