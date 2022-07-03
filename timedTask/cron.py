@@ -5,6 +5,7 @@ from utils.gitHandle import *
 from cov.models import project as projectModel
 from cov.models import covTask as covTaskModel
 from cov.models import covTaskHistory as covTaskHistoryModel
+from cov.models import reports as reportsModel
 from utils.logs import MyLog
 from django.db import connection
 from utils.covUtils import *
@@ -13,6 +14,7 @@ from utils.covUtils import *
 # 初次创建覆盖率任务后，任务状态=0，需要对0状态的进行clone代码到指定的任务目录
 # todo 这个任务期望每1分钟检查一次
 def cloneToTaskDir():
+    MyLog.info(f"-----cloneToTaskDir任务开始执行-----")
     # 查出库里有哪些是0状态的数据待clone
     cursor = connection.cursor()
     cursor.execute('''SELECT c.id AS cid,
@@ -52,6 +54,7 @@ def cloneToTaskDir():
 
 # 获取覆盖率
 def getCov():
+    MyLog.info(f"-----getCov任务开始执行-----")
     # 1、获取被测试分支
     # 查出库里有哪些是1和3状态的数据待pull、获取覆盖率
     cursor = connection.cursor()
@@ -81,7 +84,7 @@ def getCov():
         covTaskName = res[5]
         branch = res[7]
         clientServerHostPort = res[8]
-        MyLog.info(f"开始搜集覆盖率--start git clone--覆盖率任务名称:{covTaskName}--clientServer:{clientServerHostPort}")
+        MyLog.info(f"开始搜集覆盖率--覆盖率任务名称:{covTaskName}--clientServer:{clientServerHostPort}")
         try:
             # 拉取代码
             pullCode(gitProjectName, covTaskId)
@@ -93,21 +96,26 @@ def getCov():
             t = datetime.now().strftime('%Y%m%d%H%M%S%f')
             for clientServer in clientServerList:
                 covPath = covReportsPath(gitProjectName, covTaskId)
-                runId = generateRunId(t, covTaskId, originalHostPort=clientServer)
+                runId = generateRunId(t, covTaskId, None)
+                covFileName = generateRunId(t, covTaskId, originalHostPort=clientServer)
                 print(covPath)
                 print(runId)
                 # 拉取正常的入库status=1
                 try:
-                    execCmd(f'goc profile --center={clientServer} -o {covPath}/{runId}.cov''')
+                    execCmd(f'goc profile --center={clientServer} -o {covPath}/{covFileName}.cov''')
                     p = covTaskHistoryModel(runId = runId,
                                             covTaskId = covTaskId,
                                             clientServerHostPort = clientServer,
-                                            covFileName = runId + ".cov",
-                                            status = 1,
+                                            covFileName = covFileName + ".cov",
+                                            status = 3,
                                            )
                     p.save()
+                    covTaskModel.objects.filter(id=covTaskId).update(
+                        status = 31,
+                        updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
+                    )
                     MyLog.info(f"收集覆盖率完毕--覆盖率任务名称:{covTaskName}--服务器:{clientServer}")
-                # 拉取正常的入库status=2
+                # 拉取非正常的入库status=2
                 except Exception as e:
                     p = covTaskHistoryModel(runId=runId,
                                             covTaskId=covTaskId,
@@ -119,32 +127,67 @@ def getCov():
                     MyLog.info(f"收集覆盖率异常--覆盖率任务名称:{covTaskName}--服务器:{clientServer}，报错如下: {str(e)}")
 
         except Exception as e:
-            MyLog.error(f"pull下载异常--end git pull--覆盖率任务名称:{covTaskName}--仓库地址:{gitUrl}，报错如下: {str(e)}")
+            MyLog.error(f"获取覆盖率cov文件异常--覆盖率任务名称:{covTaskName}--仓库地址:{gitUrl}，报错如下: {str(e)}")
             covTaskModel.objects.filter(id=covTaskId).update(
-                                                            # status=4,
                                                              updateTime=time.strftime("%Y-%m-%d %H:%M:%S")
                                                              )
 
 
-# 获取覆盖率
+# 生成覆盖率报告
 def generateHtmlReport():
-    # 查出库里有哪些是0状态的数据待clone
+    MyLog.info(f"-----generateHtmlReport任务开始执行-----")
+    # 查出库里状态是1的covTaskId
     cursor = connection.cursor()
     cursor.execute('''SELECT c.id AS cid,
-                                    p.id AS pid, 
-                                    gitName,
-                                    gitUrl,
-                                    gitPwd,
-                                    covTaskName,
-                                    p.projectName ,
-                                    c.branch,
-                                    c.clientServerHostPort
-                                    FROM cov_covtask c
-                                        LEFT JOIN cov_project p ON  c.projectId = p.id
-                                        WHERE c.deleted = 0 AND c.status IN(1,3) AND p.deleted = 0 
-                                            ''')
+                                p.id AS pid, 
+                                gitName,
+                                gitUrl,
+                                gitPwd,
+                                compareBranch,
+                                covTaskName,
+                                p.projectName 
+                                FROM cov_covtask c
+                                    LEFT JOIN cov_project p ON  c.projectId = p.id
+                                    WHERE c.deleted = 0 AND c.status in (31) AND p.deleted = 0 
+                                        ''')
     resObj = cursor.fetchall()
     i = 0
-    # 依次下载
+    # 依次
     for res in resObj:
         res = resObj[i]
+        compareBranch = res[5]
+        covTaskName = res[6]
+        gitProjectName = res[7]
+        covTaskId = res[0]
+        covPath = covReportsPath(gitProjectName, covTaskId)
+        t = datetime.now().strftime('%Y%m%d%H%M%S%f')
+        runId = generateRunId(t, covTaskId, None)
+        mergeCovName = "merge" + str(runId)
+        try:
+            MyLog.info(f"开始生成html--覆盖率任务名称:{covTaskName}")
+            # 合并全部覆盖率文件
+            execCmd(f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov''')
+            # 把历史cov文件移到bak文件夹
+            execCmd(f'''mkdir -p {covPath}/bak && mv {covPath}/*.cov {covPath}/bak''')
+            # 把最新的cov文件移出来，下次merge使用
+            execCmd(f'''mv {covPath}/bak/{mergeCovName}.cov {covPath}''')
+            # 把cov转换成xml
+            execCmd(f'''gocov convert {covPath}/{mergeCovName}.cov |gocov-xml > {covPath}/{mergeCovName}.xml''')
+            # xml转换成后html文件
+            execCmd(f'''diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html''')
+            MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
+            p = reportsModel(runId=runId,
+                             covTaskId=covTaskId,
+                             htmlFileName = mergeCovName + '.html',
+                             status = 1,
+                             )
+            p.save()
+        except Exception as e:
+            p = reportsModel(runId=runId,
+                             covTaskId=covTaskId,
+                             htmlFileName = mergeCovName + '.html',
+                             status = 2,
+                             )
+            p.save()
+            MyLog.error(f"生成html失败--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html，报错如下: {str(e)}")
+
