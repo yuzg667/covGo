@@ -74,13 +74,15 @@ class MyLog:
     @staticmethod
     def info(log_meg):
         set_handler('info')
-        logger.info(log_meg)
+        # logger.info(log_meg)
+        logger.info("[info] %s %s" % (get_current_time(), log_meg))
         remove_handler('info')
 
     @staticmethod
     def warning(log_meg):
         set_handler('warning')
-        logger.warning(log_meg)
+        # logger.warning(log_meg)
+        logger.warning("[warning] %s %s" % (get_current_time(), log_meg))
         remove_handler('warning')
 
     @staticmethod
@@ -93,7 +95,8 @@ class MyLog:
     @staticmethod
     def critical(log_meg):
         set_handler('critical')
-        logger.error(log_meg)
+        # logger.error(log_meg)
+        logger.error("[critical] %s %s" % (get_current_time(), log_meg))
         remove_handler('critical')
 
     # 设置控制台输出格式

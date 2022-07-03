@@ -1,6 +1,7 @@
 import os
 from git.repo import Repo
 from django.conf import settings
+from utils.execCmd import execCmd
 
 # https://blog.csdn.net/martinlinux/article/details/119874787
 
@@ -14,6 +15,9 @@ def cloneCode(username,pwd,gitUrl,gitProjectName,covTaskId):
     # Repo.clone_from('https://yuzg667:22222@gitee.com/yuzg667/simple-go-server.git', to_path=download_path, branch='main')
     # Repo.clone_from('https://yuzg667:22222@gitee.com/yuzg667/simple-go-server.git', to_path=downloadPath("..","tttt"))
     codeDir = downloadPath(gitProjectName,covTaskId)
+    print(codeDir)
+    # 首次clone创建对应文件夹
+    execCmd("mkdir -p {codeDir}")
     Repo.clone_from(f'https://{username}:{pwd}@{gitUrl}', to_path=codeDir)
 
 # 获取远程分支列表
