@@ -19,8 +19,7 @@ def covReportsPath(gitProjectName,covTaskId):
     return covReportsPath
 
 # 生成runId
-def generateRunId(covTaskId,originalHostPort):
-    t = datetime.now().strftime('%Y%m%d%H%M%S%f')
+def generateRunId(t, covTaskId,originalHostPort):
     patternHostPort = re.compile(r'''\/\/(.*)''')
     if originalHostPort:
         hostPort = re.findall(patternHostPort,str(originalHostPort))[0]
