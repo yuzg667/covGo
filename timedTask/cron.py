@@ -1,7 +1,7 @@
 import time
 
 from utils.execCmd import execCmd
-from utils.gitHandle import *
+from utils.gitHandle import cloneCode, pullCode, checkOutBranch
 from cov.models import project as projectModel
 from cov.models import covTask as covTaskModel
 from cov.models import covTaskHistory as covTaskHistoryModel
@@ -70,7 +70,7 @@ def getCov():
                                     c.clientServerHostPort
                                     FROM cov_covtask c
                                         LEFT JOIN cov_project p ON  c.projectId = p.id
-                                        WHERE c.deleted = 0 AND c.status IN(1,3) AND p.deleted = 0 
+                                        WHERE c.deleted = 0 AND c.status IN(1,3,31) AND p.deleted = 0 
                                             ''')
     resObj = cursor.fetchall()
     i = 0

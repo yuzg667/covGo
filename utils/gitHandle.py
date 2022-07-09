@@ -8,6 +8,8 @@ from utils.execCmd import execCmd
 # 定义下载代码的路径：由项目名/覆盖率任务id组成
 def downloadPath(gitProjectName,covTaskId):
     gitDownloadPath = os.path.join(settings.BASE_DIR, '..', 'covFilesDir', str(gitProjectName).strip(), str(covTaskId).strip())
+    if not os.path.exists(gitDownloadPath):
+        os.makedirs(gitDownloadPath)
     return gitDownloadPath
 
 # 克隆仓库，不指定分支
@@ -17,7 +19,8 @@ def cloneCode(username,pwd,gitUrl,gitProjectName,covTaskId):
     codeDir = downloadPath(gitProjectName,covTaskId)
     print(codeDir)
     # 首次clone创建对应文件夹
-    execCmd("mkdir -p {codeDir}")
+    if not os.path.exists(codeDir):
+        os.makedirs(codeDir)
     Repo.clone_from(f'https://{username}:{pwd}@{gitUrl}', to_path=codeDir)
 
 # 获取远程分支列表

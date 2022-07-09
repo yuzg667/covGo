@@ -38,9 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_apscheduler',
     'cov',
     'timedTask',
-    'django_crontab',
+    # 'django_crontab',
 ]
 
 MIDDLEWARE = [
@@ -150,10 +151,9 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SESSION_EXPIRE_AT_BROWSER_CLOSE = True # 关闭浏览器，则COOKIE失效
 
 # 解决 crontab 中文问题
-CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
-
-CRONJOBS = [
-    ('*/1 * * * *', 'timedTask.cron.cloneToTaskDir','>>logs.txt'),  #   */1 * * * *
-    ('*/1 * * * *', 'timedTask.cron.getCov','>>logs.txt'),  #   */1 * * * *
-    ('*/1 * * * *', 'timedTask.cron.generateHtmlReport','>>logs.txt'),  #   */1 * * * *
-]
+# CRONTAB_COMMAND_PREFIX = 'LANG_ALL=zh_cn.UTF-8'
+# CRONJOBS = [
+#     ('*/1 * * * *', 'timedTask.cron.cloneToTaskDir','>>logs.txt'),  #   */1 * * * *
+#     ('*/1 * * * *', 'timedTask.cron.getCov','>>logs.txt'),  #   */1 * * * *
+#     ('*/1 * * * *', 'timedTask.cron.generateHtmlReport','>>logs.txt'),  #   */1 * * * *
+# ]
