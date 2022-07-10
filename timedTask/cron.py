@@ -1,6 +1,7 @@
 import time
 from django.conf import settings
 from utils.execCmd import execCmd
+from utils.fileHandle import getXmlFileName
 from utils.gitHandle import cloneCode, pullCode, checkOutBranch, downloadPath
 from cov.models import project as projectModel
 from cov.models import covTask as covTaskModel
@@ -172,6 +173,11 @@ def generateHtmlReport():
         mergeCovName = "merge" + str(runId)
         try:
             MyLog.info(f"开始生成html--覆盖率任务名称:{covTaskName}")
+            xmlNameList = getXmlFileName(covPath)
+            # 把0kb的xml视为有问题的文件
+            for xml in xmlNameList:
+                if os.stat(f'{covPath}/{xml}').st_size == 0:
+                    execCmd(f'''mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
             # 合并全部覆盖率文件
             # mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
             mergeCmd = f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
@@ -209,7 +215,7 @@ def generateHtmlReport():
                              status=2,
                              )
             p.save()
-            # 把错误文件重命名，以免下次会再次merge报错
+            # 把错误xml文件重命名，以免下次会再次merge报错
             execCmd(f'''mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
             MyLog.error(f"生成html失败--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html，报错如下: {str(e)}")
     i = i + 1
