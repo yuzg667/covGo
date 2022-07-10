@@ -7,6 +7,8 @@ import time
 import logging.handlers
 
 # 日志打印等级
+from django.conf import settings
+
 LEVELS = {
     'debug': logging.DEBUG,
     'info': logging.INFO,
@@ -53,8 +55,8 @@ def get_current_time():
 
 class MyLog:
     path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    log_file = path + '../covGoLog/log.log'
-    err_file = path + '../covGoLog/err.log'
+    log_file = path + f'{settings.BASE_DIR}../covGoLog/log.log'
+    err_file = path + f'{settings.BASE_DIR}../covGoLog/err.log'
     logger.setLevel(LEVELS.get(level, logging.NOTSET))
     create_file(log_file)
     create_file(err_file)
