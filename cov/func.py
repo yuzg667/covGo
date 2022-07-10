@@ -7,5 +7,5 @@ def getProjectChoices():
 
 def getProjectName(id):
     Obj = projectModel.objects.filter(id=id).order_by('-id')
-    projectName =  Obj[0].projectName
+    projectName = Obj[0].projectName
     return projectName

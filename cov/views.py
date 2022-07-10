@@ -31,7 +31,7 @@ def covHtmlList(request):
                                                 r.isCrawled
                                                  FROM `cov_reports` r
                                                 LEFT JOIN cov_covTask c ON r.covTaskId = c.id
-                                                WHERE r.covTaskId = {covTaskId} AND r.status = 1 ORDER BY createTime DESC
+                                                WHERE r.covTaskId =  {covTaskId} AND r.status = 1  AND  diffLineTotal != '-1' ORDER BY createTime DESC
                                         ''')
     projectName = None
     covTaskName = None
