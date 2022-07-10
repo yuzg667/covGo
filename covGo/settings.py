@@ -165,9 +165,14 @@ from django.conf import settings
 flag1 = 0
 def initFileAndDir():
     if flag1 == 0 :
+        # 初始化创建git、cov目录
         execCmd(f'''mkdir -p {settings.BASE_DIR}/../covFilesDir''')
         execCmd(f'''chmod 777 {settings.BASE_DIR}/../covFilesDir''')
         execCmd(f'''chmod 777 {settings.BASE_DIR}/../covFilesDir/*''')
+        # 初始化创建日志目录
+        execCmd(f'''mkdir -p {settings.BASE_DIR}/../covGoLog''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/../covGoLog''')
+        execCmd(f'''chmod 777 {settings.BASE_DIR}/../covGoLog/*''')
         execCmd(f'''chmod 777 {settings.BASE_DIR}/cmdTools''')
         execCmd(f'''chmod 777 {settings.BASE_DIR}/cmdTools/*''')
         flag1 == 1
