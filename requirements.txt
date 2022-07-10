@@ -5,3 +5,5 @@ pymysql
 requests
 django_apscheduler
 diff_cover
+BS4
+lxml
