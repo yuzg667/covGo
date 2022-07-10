@@ -209,6 +209,8 @@ def generateHtmlReport():
                              status=2,
                              )
             p.save()
+            # 把错误文件重命名，以免下次会再次merge报错
+            execCmd(f'''mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
             MyLog.error(f"生成html失败--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html，报错如下: {str(e)}")
     i = i + 1
 
