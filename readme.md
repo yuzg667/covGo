@@ -3,8 +3,9 @@
 GO语言的覆盖率平台
 
 ## 效果预览
-<iframe  src="doc/2022-06-24-16-09-41.mp4"></iframe>
-
+<video id="video" controls="" preload="none">
+    <source id="mp4" src="doc/2022-06-24-16-09-41.mp4" type="video/mp4">
+</video>
 ## 环境要求
 系统：linux、mac（不支持windows）
 
