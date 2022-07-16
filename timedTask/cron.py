@@ -193,9 +193,23 @@ def generateHtmlReport():
             mvNewMergeOutCmd = f'''mv {covPath}/bak/{mergeCovName}.cov {covPath}'''
             MyLog.info(f'mvNewMergeOutCmd:{mvNewMergeOutCmd}')
             execCmd(mvNewMergeOutCmd)
+            # 代码路径
+            gitCodePath = downloadPath(gitProjectName, covTaskId)
+            # 全量覆盖率生成 todo
+            covToHtmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-html > {covPath}/full_{mergeCovName}.xml'''
+            MyLog.info(f'covToHtmlCmd:{covToHtmlCmd}')
+            execCmd(covToHtmlCmd)
+            m = reportsModel(runId=runId,
+                             type=1,
+                             covTaskId=covTaskId,
+                             htmlFileName='full_' + mergeCovName + '.html',
+                             status=1,
+                             )
+            m.save()
+
             # 把cov转换成xml
             # covToXmlCmd = f'''cd {covPath} && gocov convert {covPath}/{mergeCovName}.cov | gocov-xml > {covPath}/{mergeCovName}.xml'''
-            gitCodePath = downloadPath(gitProjectName, covTaskId)
+
             covToXmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-xml > {covPath}/{mergeCovName}.xml'''
             MyLog.info(f'covToXmlCmd:{covToXmlCmd}')
             execCmd(covToXmlCmd)
