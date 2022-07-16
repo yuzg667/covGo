@@ -82,9 +82,9 @@ DATABASES = {
 'default': {
      'ENGINE': 'django.db.backends.mysql',
      'NAME': 'cov',
-     'USER': 'root',
+     'USER': 'cov',
      'PASSWORD': '123456',
-     'HOST': '10.20.8.21',
+     'HOST': '127.0.0.1',
      'PORT': '3306',
  }
     # 'default': {

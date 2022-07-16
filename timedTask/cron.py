@@ -241,7 +241,7 @@ def getCovFromHtml():
                         r.isCrawled,
                         r.htmlFileName
                          FROM `cov_reports` r
-                        LEFT JOIN cov_covTask c ON r.covTaskId = c.id
+                        LEFT JOIN cov_covtask c ON r.covTaskId = c.id
                         WHERE  r.status = 1 AND r.isCrawled = 0 ORDER BY createTime ASC 
                                             ''')
     resObj = cursor.fetchall()

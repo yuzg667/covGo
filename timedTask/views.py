@@ -31,10 +31,10 @@ try:
     # @register_job(scheduler, 'cron', day_of_week='mon-fri', hour='9', minute='30', second='10',id='task_time')
     @register_job(scheduler, "interval", seconds=30)  # minutes=10 seconds=5
     def my_job():
-        # cloneToTaskDir()
-        # getCov()
+        cloneToTaskDir()
+        getCov()
         generateHtmlReport()
-        # getCovFromHtml()
+        getCovFromHtml()
     # register_events(scheduler)
     scheduler.start()
 
