@@ -31,7 +31,7 @@ admin.site.register(project, projectAdmin)
 
 
 class covTaskAdmin(admin.ModelAdmin):
-    list_display = ('covTaskName', 'id', 'projectName', 'startTime', 'endTime', 'lastCollectTime', 'deleted', 'createTime')
+    list_display = ('covTaskName', 'id', 'projectName', 'startTime', 'endTime', 'lastCollectTime', 'status', 'deleted', 'createTime')
     search_fields = ('covTaskName', 'projectName')
     exclude = ('projectName', 'deleted', 'status', 'lastCollectTime')  # 编辑页面不显示这些字段
 
