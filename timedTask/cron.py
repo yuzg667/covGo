@@ -177,8 +177,9 @@ def generateHtmlReport():
             # 把0kb的xml视为有问题的文件
             for xml in xmlNameList:
                 if os.stat(f'{covPath}/{xml}').st_size == 0:
-                    MyLog.info(f'''-----11111111111:mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
-                    execCmd(f'''mv {covPath}/{mergeCovName}.xml  {covPath}/{mergeCovName}.xml.error''')
+                    mvToErrorCmd = f'''mvToErrorCmd: mv {covPath}/{xml}  {covPath}/{xml}.error'''
+                    MyLog.info(mvToErrorCmd)
+                    execCmd(mvToErrorCmd)
             # 合并全部覆盖率文件
             # mergeCmd = f'''{settings.BASE_DIR}/cmdTools/goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
             mergeCmd = f'''goc merge {covPath}/*.cov -o {covPath}/{mergeCovName}.cov'''
@@ -198,11 +199,19 @@ def generateHtmlReport():
             covToXmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-xml > {covPath}/{mergeCovName}.xml'''
             MyLog.info(f'covToXmlCmd:{covToXmlCmd}')
             execCmd(covToXmlCmd)
-            # xml转换成后html文件
-            xmlToHtmlCmd = f'''cd {gitCodePath} && diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html'''
-            MyLog.info(f'xmlToHtmlCmd:{xmlToHtmlCmd}')
-            execCmd(xmlToHtmlCmd)
-            MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
+
+            # 判断生成的xml大小是否为0,为0则不进行下一步转换
+            if os.stat(f'{covPath}/{mergeCovName}.xml').st_size != 0:
+                # xml转换成后html文件
+                xmlToHtmlCmd = f'''cd {gitCodePath} && diff-cover {covPath}/{mergeCovName}.xml --compare-branch={compareBranch} --html-report {covPath}/{mergeCovName}.html'''
+                MyLog.info(f'xmlToHtmlCmd:{xmlToHtmlCmd}')
+                execCmd(xmlToHtmlCmd)
+                MyLog.info(f"生成html完毕--覆盖率任务名称:{covTaskName}--生成文件：{mergeCovName}.html")
+            elif os.stat(f'{covPath}/{mergeCovName}.xml').st_size == 0:
+                mvToErrorCmd2 = f'''mvToErrorCmd2: mv {covPath}/{xml}  {covPath}/{xml}.error'''
+                MyLog.info(mvToErrorCmd2)
+                execCmd(mvToErrorCmd2)
+
             p = reportsModel(runId=runId,
                              covTaskId=covTaskId,
                              htmlFileName=mergeCovName + '.html',
