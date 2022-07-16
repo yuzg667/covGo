@@ -1,11 +1,12 @@
 # covGo
 
-GO语言的覆盖率平台
+**GO覆盖率平台**
+* 支持增量覆盖率、全量覆盖率
+* 实时收集覆盖率、无需写单测
+* 支持按照规定时间段收集
+* 支持多版本形式的覆盖率收集
+* 支持集群多服务收集
 
-## 效果预览
-<video id="video" controls="" preload="none">
-    <source id="mp4" src="doc/2022-06-24-16-09-41.mp4" type="video/mp4">
-</video>
 ## 环境要求
 系统：linux、mac（不支持windows）
 
@@ -44,12 +45,18 @@ go install github.com/matm/gocov-html@latest
 ## 运行
 #### covGo所在服务器开启
 假设covGo所在服务器ip为10.200.8.210
+
 1、covGo服务
-安装依赖：`pip install -r requirements.txt`
-运行：`python3 manage.py runserver 0.0.0.0:8000`
+
+1.1、安装依赖：`pip install -r requirements.txt`
+
+1.2、修改settings.py中的数据库配置，执行init.sql初始化数据库
+
+1.3、命令行运行：`python3 manage.py runserver 0.0.0.0:8000`
 
 2、 开启goc服务
-```goc server```  默认端口为7777
+
+命令行运行```goc server```  ，默认端口为7777
 #### 被测服务器（一般指go后端服务器）开启
 进入go项目的根目录，使用goc编译打包：
 ```
@@ -74,6 +81,10 @@ covGo平台页面
 ![输入图片说明](doc/doccovHtmlList.png)
 ![输入图片说明](doc/doccovHtml.png)
 
+## 本项目代码仓库地址
+github: https://github.com/yuzg667/covGo
+
+gitee: https://gitee.com/yuzg667/covGo
 
 ## Related tools and services
 

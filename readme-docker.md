@@ -1,17 +1,19 @@
 # covGo
 
-GO语言的覆盖率平台
-
-## 效果预览
-<video id="video" controls="" preload="none">
-    <source id="mp4" src="doc/2022-06-24-16-09-41.mp4" type="video/mp4">
-</video>
+**GO覆盖率平台**
+* 支持增量覆盖率、全量覆盖率
+* 实时收集覆盖率、无需写单测
+* 支持按照规定时间段收集
+* 支持多版本形式的覆盖率收集
+* 支持集群多服务收集
 
 ## 环境要求
-系统：支持docker的系统
+系统：linux、mac（不支持windows）
 
 ## 安装(已ubuntu为例)
 ### coGo服务端安装 - Docker方式
+0、在mysql数据库服务上，执行init.sql初始化数据库
+
 1、编译
 ```
 sudo docker build --no-cache -t "yuzg667/covgo" .
@@ -27,8 +29,10 @@ sudo docker build --no-cache -t "yuzg667/covgo" .
 sudo docker run -d --name covgo -p 8899:8899 -p 7777:7777 yuzg667/covgo
 ```
 3、进入docker，开启covGo服务
+
 ```
 sudo docker exec -it bash 
+修改settings.py中的数据库配置
 python3 /home/workspace/covGo/manage.py runserver 0.0.0.0:8899 > /home/workspace/covgo.log
 ```
 ### 被测服务器
@@ -69,6 +73,10 @@ covGo平台页面
 ![输入图片说明](doc/doccovHtmlList.png)
 ![输入图片说明](doc/doccovHtml.png)
 
+## 本项目代码仓库地址
+github: https://github.com/yuzg667/covGo
+
+gitee: https://gitee.com/yuzg667/covGo
 
 ## Related tools and services
 
