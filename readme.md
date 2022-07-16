@@ -14,7 +14,7 @@ python: 3.6+
 
 ## 安装
 ### coGo服务端安装- 全手工自助方式
-(若动手能力差，请移步[docker安装版](doc/readme-docker.md))
+(若动手能力差，请移步[docker安装版](readme-docker.md))
 
 1、安装GOC
 ```
