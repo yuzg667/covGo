@@ -2,6 +2,8 @@
 
 GO语言的覆盖率平台
 
+## 效果预览
+<iframe  src="doc/2022-06-24-16-09-41.mp4"></iframe>
 
 ## 环境要求
 系统：linux、mac（不支持windows）
@@ -11,7 +13,9 @@ Go: 1.13+
 python: 3.6+
 
 ## 安装
-### coGo服务端安装
+### coGo服务端安装- 全手工自助方式
+(若动手能力差，请移步[docker安装版](notes/readme-docker.md))
+
 1、安装GOC
 ```
 # Mac/AMD64
@@ -57,17 +61,19 @@ goc build --center=http://10.200.8.210:7777 --agentport=:46599
 covGo平台页面
 
 1、新建项目
-![输入图片说明](doccreateProject.png)
+![输入图片说明](doc/doccreateProject.png)
 
 
 2、新建覆盖率任务
-![输入图片说明](doccreateCovTask.png)
+![输入图片说明](doc/doccreateCovTask.png)
 
 
 3、等待覆盖率任务，进入页面查看结果
-![输入图片说明](doccovTaskList.png)
-![输入图片说明](doccovHtmlList.png)
-![输入图片说明](doccovHtml.png)
+![输入图片说明](doc/doccovTaskList.png)
+![输入图片说明](doc/doccovHtmlList.png)
+![输入图片说明](doc/doccovHtml.png)
+
+
 ## Related tools and services
 
 [goc](https://github.com/qiniu/goc):

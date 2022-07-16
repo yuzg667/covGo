@@ -2,6 +2,8 @@
 
 GO语言的覆盖率平台
 
+## 效果预览
+<iframe  src="doc/2022-06-24-16-09-41.mp4"></iframe>
 
 ## 环境要求
 系统：支持docker的系统
@@ -12,9 +14,15 @@ GO语言的覆盖率平台
 ```
 sudo docker build --no-cache -t "yuzg667/covgo" .
 ```
+若不想编译，可从下网盘下载已经编译好的镜像直接使用
+```
+链接: https://caiyun.139.com/m/i?185C6wSTI8TXU  
+提取码:ZZCb
+```
+
 2、开启容器
 ```
-sudo docker run -d --name covgo -p 8899:8899 yuzg667/covgo
+sudo docker run -d --name covgo -p 8899:8899 -p 7777:7777 yuzg667/covgo
 ```
 3、进入docker，开启covGo服务
 ```
@@ -47,17 +55,19 @@ goc build --center=http://10.200.8.210:7777 --agentport=:46599
 covGo平台页面
 
 1、新建项目
-![输入图片说明](doccreateProject.png)
+![输入图片说明](doc/doccreateProject.png)
 
 
 2、新建覆盖率任务
-![输入图片说明](doccreateCovTask.png)
+![输入图片说明](doc/doccreateCovTask.png)
 
 
 3、等待覆盖率任务，进入页面查看结果
-![输入图片说明](doccovTaskList.png)
-![输入图片说明](doccovHtmlList.png)
-![输入图片说明](doccovHtml.png)
+![输入图片说明](doc/doccovTaskList.png)
+![输入图片说明](doc/doccovHtmlList.png)
+![输入图片说明](doc/doccovHtml.png)
+
+
 ## Related tools and services
 
 [goc](https://github.com/qiniu/goc):
