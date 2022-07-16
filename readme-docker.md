@@ -31,7 +31,7 @@ sudo docker run -d --name covgo -p 8899:8899 -p 7777:7777 yuzg667/covgo
 3、进入docker，开启covGo服务
 
 ```
-sudo docker exec -it bash 
+sudo docker exec -it covgo bash
 修改settings.py中的数据库配置
 python3 /home/workspace/covGo/manage.py runserver 0.0.0.0:8899 > /home/workspace/covgo.log
 ```
