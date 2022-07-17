@@ -112,7 +112,7 @@ DROP TABLE IF EXISTS `cov_covtask`;
 
 CREATE TABLE `cov_covtask` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `projectName` varchar(30) DEFAULT NULL,
+  `projectName` varchar(255) DEFAULT NULL,
   `projectId` int(11) DEFAULT NULL,
   `covTaskName` varchar(30) NOT NULL,
   `branch` varchar(100) DEFAULT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE `cov_covtask` (
   `clientServerHostPort` longtext,
   PRIMARY KEY (`id`),
   UNIQUE KEY `cov_covtask_covTaskName_b4af3cfb_uniq` (`covTaskName`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `cov_covtaskhistory` */
 
@@ -143,7 +143,7 @@ CREATE TABLE `cov_covtaskhistory` (
   `createTime` datetime(6) NOT NULL,
   `updateTime` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=123 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=187 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `cov_project` */
 
@@ -151,7 +151,7 @@ DROP TABLE IF EXISTS `cov_project`;
 
 CREATE TABLE `cov_project` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `projectName` varchar(20) NOT NULL,
+  `projectName` varchar(255) NOT NULL,
   `gitURL` varchar(255) NOT NULL,
   `gitName` varchar(255) NOT NULL,
   `gitPwd` varchar(255) NOT NULL,
@@ -177,8 +177,9 @@ CREATE TABLE `cov_reports` (
   `diffLineTotal` varchar(50) DEFAULT NULL,
   `isCrawled` int(11) DEFAULT NULL,
   `missLineTotal` varchar(50) DEFAULT NULL,
+  `type` varchar(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1112 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2714 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `django_admin_log` */
 
@@ -198,7 +199,7 @@ CREATE TABLE `django_admin_log` (
   KEY `django_admin_log_user_id_c564eba6_fk_auth_user_id` (`user_id`),
   CONSTRAINT `django_admin_log_content_type_id_c4bce8eb_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`),
   CONSTRAINT `django_admin_log_user_id_c564eba6_fk_auth_user_id` FOREIGN KEY (`user_id`) REFERENCES `auth_user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `django_apscheduler_djangojob` */
 
@@ -229,7 +230,7 @@ CREATE TABLE `django_apscheduler_djangojobexecution` (
   UNIQUE KEY `unique_job_executions` (`job_id`,`run_time`),
   KEY `django_apscheduler_djangojobexecution_run_time_16edd96b` (`run_time`),
   CONSTRAINT `django_apscheduler_djangojobexecution_job_id_daf5090a_fk` FOREIGN KEY (`job_id`) REFERENCES `django_apscheduler_djangojob` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=133 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=3433 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `django_content_type` */
 
@@ -253,7 +254,7 @@ CREATE TABLE `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8mb4;
 
 /*Table structure for table `django_session` */
 

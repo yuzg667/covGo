@@ -196,7 +196,7 @@ def generateHtmlReport():
             # 代码路径
             gitCodePath = downloadPath(gitProjectName, covTaskId)
             # 全量覆盖率生成 todo
-            covToHtmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-html > {covPath}/full_{mergeCovName}.xml'''
+            covToHtmlCmd = f'''cd {gitCodePath} && {settings.BASE_DIR}/cmdTools/gocov convert {covPath}/{mergeCovName}.cov | {settings.BASE_DIR}/cmdTools/gocov-html > {covPath}/full_{mergeCovName}.html'''
             MyLog.info(f'covToHtmlCmd:{covToHtmlCmd}')
             execCmd(covToHtmlCmd)
             m = reportsModel(runId=runId,
@@ -279,7 +279,6 @@ def getCovFromHtml():
         htmlPath = os.path.join(covReportsPath(gitProjectName, covTaskId), htmlFileName)
         try:
             covRes = crawlCovFromHtml(htmlPath)
-            covRes['diffLineTotal']
             reportsModel.objects.filter(id=id).update(
                 isCrawled=1,
                 diffLineTotal=covRes['diffLineTotal'],
