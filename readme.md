@@ -5,7 +5,9 @@ GO语言的覆盖率平台
 
 ## 环境要求
 系统：linux、mac（不支持windows）
+
 Go: 1.13+
+
 python: 3.6+
 
 ## 安装
@@ -36,7 +38,7 @@ go install github.com/matm/gocov-html@latest
 
 ## 运行
 #### covGo所在服务器开启
-假设covGo所在服务器ip为10.20.8.21
+假设covGo所在服务器ip为10.200.8.210
 1、covGo服务
 安装依赖：`pip install -r requirements.txt`
 运行：`python3 manage.py runserver 0.0.0.0:8000`
@@ -46,17 +48,26 @@ go install github.com/matm/gocov-html@latest
 #### 被测服务器（一般指go后端服务器）开启
 进入go项目的根目录，使用goc编译打包：
 ```
-goc build --center=http://10.20.8.21:7777 --agentport=:46599
+goc build --center=http://10.200.8.210:7777 --agentport=:46599
 ```
 备注：`--center=`的值为goc服务ip端口； `--agentport=`的值为被测服务外露的端口
 
 
 ## 使用
 covGo平台页面
+
 1、新建项目
-2、覆盖率任务
+![输入图片说明](doccreateProject.png)
 
 
+2、新建覆盖率任务
+![输入图片说明](doccreateCovTask.png)
+
+
+3、等待覆盖率任务，进入页面查看结果
+![输入图片说明](doccovTaskList.png)
+![输入图片说明](doccovHtmlList.png)
+![输入图片说明](doccovHtml.png)
 ## Related tools and services
 
 [goc](https://github.com/qiniu/goc):
